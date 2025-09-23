@@ -2,6 +2,7 @@ use deno_core::op2;
 use deno_core::serde;
 use deno_error::JsErrorBox;
 use sapphillon_core::plugin::{CorePluginFunction, CorePluginPackage};
+use sapphillon_core::proto::sapphillon::v1::{PluginFunction, PluginPackage};
 
 const DEFAULT_BASE: &str = "http://localhost:58261";
 
@@ -30,7 +31,7 @@ where
 	.map_err(|_| JsErrorBox::new("Error", "thread panicked".to_string()))?
 }
 
-pub fn floorp_plugin_package() -> CorePluginPackage {
+pub fn core_floorp_plugin_package() -> CorePluginPackage {
 	CorePluginPackage::new(
 		"app.sapphillon.core.floorp".to_string(),
 		"Floorp".to_string(),
@@ -79,6 +80,88 @@ pub fn floorp_plugin_package() -> CorePluginPackage {
 			floorp_check_scraper_instance_exists_plugin(),
 		],
 	)
+}
+
+pub fn floorp_plugin_package() -> PluginPackage {
+	PluginPackage {
+		package_id: "app.sapphillon.core.floorp".to_string(),
+		package_name: "Floorp".to_string(),
+		description: "Floorp browser automation primitives.".to_string(),
+		functions: floorp_plugin_functions(),
+		package_version: env!("CARGO_PKG_VERSION").to_string(),
+		deprecated: None,
+		plugin_store_url: "BUILTIN".to_string(),
+		internal_plugin: Some(true),
+		installed_at: None,
+		updated_at: None,
+		verified: Some(true),
+	}
+}
+
+fn floorp_plugin_functions() -> Vec<PluginFunction> {
+	let mut functions = vec![floorp_plugin_function(
+		"health",
+		"Health",
+		"Floorp OS API health endpoint",
+	)];
+
+	functions.extend([
+		("createScraperInstance", "Create Scraper Instance", "Creates a new scraper instance."),
+		("createTabInstance", "Create Tab Instance", "Creates a new tab instance."),
+		("navigateScraper", "Navigate Scraper", "Navigate a scraper instance to a URL."),
+		("navigateTab", "Navigate Tab", "Navigate a tab instance to a URL."),
+		("scraperHtml", "Scraper HTML", "Get current page HTML of scraper instance."),
+		("tabHtml", "Tab HTML", "Get current page HTML of tab instance."),
+		("tabScreenshot", "Tab Screenshot", "Take a screenshot of the tab page (PNG base64)."),
+		("tabElement", "Tab Element", "Get element information from tab by selector."),
+		("tabElementText", "Tab Element Text", "Get text content of element in tab by selector."),
+		("tabClickElement", "Tab Click Element", "Click an element in tab by selector."),
+		("tabWaitForElement", "Tab Wait For Element", "Wait for an element in tab by selector."),
+		("tabExecuteScript", "Tab Execute Script", "Execute JS in tab."),
+		("tabElementScreenshot", "Tab Element Screenshot", "Take a screenshot of an element in tab (PNG base64)."),
+		("tabFullPageScreenshot", "Tab Full Page Screenshot", "Take a full page screenshot of tab (PNG base64)."),
+		("tabRegionScreenshot", "Tab Region Screenshot", "Take a region screenshot of tab (PNG base64)."),
+		("tabFillForm", "Tab Fill Form", "Fill a form in tab."),
+		("tabElementValue", "Tab Element Value", "Get element value in tab by selector."),
+		("tabSubmitForm", "Tab Submit Form", "Submit a form element in tab."),
+		("scraperUri", "Scraper URI", "Get current URI of scraper instance."),
+		("tabUri", "Tab URI", "Get current URI of tab instance."),
+		("waitForElement", "Wait For Element", "Wait for an element by selector."),
+		("clickElement", "Click Element", "Click an element by selector."),
+		("elementText", "Element Text", "Get text content of element by selector."),
+		("elementValue", "Element Value", "Get value of element by selector."),
+		("fillForm", "Fill Form", "Fill a form element."),
+		("submitForm", "Submit Form", "Submit a form element."),
+		("screenshot", "Screenshot", "Take a screenshot of the page (PNG base64)."),
+		("elementScreenshot", "Element Screenshot", "Take a screenshot of an element (PNG base64)."),
+		("fullPageScreenshot", "Full Page Screenshot", "Take a full page screenshot (PNG base64)."),
+		("regionScreenshot", "Region Screenshot", "Take a region screenshot (PNG base64)."),
+		("listBrowserTabs", "List Browser Tabs", "List browser tabs (lightweight)."),
+		("browserTabs", "Browser Tabs", "Get browser tabs (detailed)."),
+		("browserHistory", "Browser History", "Get browser history list."),
+		("browserDownloads", "Browser Downloads", "Get browser downloads list."),
+		("browserContext", "Browser Context", "Get browser context (history/tabs/downloads)."),
+		("attachToTab", "Attach To Tab", "Attach to an existing tab instance."),
+		("destroyTabInstance", "Destroy Tab Instance", "Destroy a tab instance."),
+		("destroyScraperInstance", "Destroy Scraper Instance", "Destroy a scraper instance."),
+		("checkTabInstanceExists", "Check Tab Instance Exists", "Check if tab instance exists."),
+		("checkScraperInstanceExists", "Check Scraper Instance Exists", "Check if scraper instance exists."),
+	]
+	.into_iter()
+	.map(|(suffix, name, desc)| floorp_plugin_function(suffix, name, desc)));
+
+	functions
+}
+
+fn floorp_plugin_function(suffix: &str, name: &str, description: &str) -> PluginFunction {
+	PluginFunction {
+		function_id: format!("app.sapphillon.core.floorp.{}", suffix),
+		function_name: name.to_string(),
+		description: description.to_string(),
+		permissions: vec![],
+		arguments: String::new(),
+		returns: String::new(),
+	}
 }
 
 macro_rules! make_plugin {

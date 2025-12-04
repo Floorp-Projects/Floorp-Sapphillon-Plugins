@@ -55,6 +55,7 @@ pub fn core_floorp_plugin_package() -> CorePluginPackage {
 			floorp_tab_fill_form_plugin(),
 			floorp_tab_element_value_plugin(),
 			floorp_tab_submit_form_plugin(),
+			floorp_tab_clear_input_plugin(),
 			floorp_scraper_uri_plugin(),
 			floorp_wait_for_element_plugin(),
 			floorp_click_element_plugin(),
@@ -62,6 +63,7 @@ pub fn core_floorp_plugin_package() -> CorePluginPackage {
 			floorp_element_value_plugin(),
 			floorp_fill_form_plugin(),
 			floorp_submit_form_plugin(),
+			floorp_clear_input_plugin(),
 			floorp_screenshot_plugin(),
 			floorp_element_screenshot_plugin(),
 			floorp_fullpage_screenshot_plugin(),
@@ -78,6 +80,42 @@ pub fn core_floorp_plugin_package() -> CorePluginPackage {
 			floorp_attach_to_tab_plugin(),
 			floorp_check_tab_instance_exists_plugin(),
 			floorp_check_scraper_instance_exists_plugin(),
+			floorp_attribute_plugin(),
+			floorp_is_visible_plugin(),
+			floorp_is_enabled_plugin(),
+			floorp_select_option_plugin(),
+			floorp_set_checked_plugin(),
+			floorp_hover_plugin(),
+			floorp_scroll_to_plugin(),
+			floorp_title_plugin(),
+			floorp_double_click_plugin(),
+			floorp_right_click_plugin(),
+			floorp_focus_plugin(),
+			floorp_drag_and_drop_plugin(),
+			floorp_cookies_plugin(),
+			floorp_set_cookie_plugin(),
+			floorp_accept_alert_plugin(),
+			floorp_dismiss_alert_plugin(),
+			floorp_pdf_plugin(),
+			floorp_wait_for_network_idle_plugin(),
+			floorp_tab_attribute_plugin(),
+			floorp_tab_is_visible_plugin(),
+			floorp_tab_is_enabled_plugin(),
+			floorp_tab_select_option_plugin(),
+			floorp_tab_set_checked_plugin(),
+			floorp_tab_hover_plugin(),
+			floorp_tab_scroll_to_plugin(),
+			floorp_tab_title_plugin(),
+			floorp_tab_double_click_plugin(),
+			floorp_tab_right_click_plugin(),
+			floorp_tab_focus_plugin(),
+			floorp_tab_drag_and_drop_plugin(),
+			floorp_tab_cookies_plugin(),
+			floorp_tab_set_cookie_plugin(),
+			floorp_tab_accept_alert_plugin(),
+			floorp_tab_dismiss_alert_plugin(),
+			floorp_tab_pdf_plugin(),
+			floorp_tab_wait_for_network_idle_plugin(),
 		],
 	)
 }
@@ -146,6 +184,42 @@ fn floorp_plugin_functions() -> Vec<PluginFunction> {
 		("destroyScraperInstance", "Destroy Scraper Instance", "Destroy a scraper instance."),
 		("checkTabInstanceExists", "Check Tab Instance Exists", "Check if tab instance exists."),
 		("checkScraperInstanceExists", "Check Scraper Instance Exists", "Check if scraper instance exists."),
+		("attribute", "Get Attribute", "Get element attribute."),
+		("isVisible", "Is Visible", "Check if element is visible."),
+		("isEnabled", "Is Enabled", "Check if element is enabled."),
+		("selectOption", "Select Option", "Select option in dropdown."),
+		("setChecked", "Set Checked", "Set checkbox/radio checked state."),
+		("hover", "Hover", "Hover over element."),
+		("scrollTo", "Scroll To", "Scroll to element."),
+		("title", "Get Title", "Get page title."),
+		("doubleClick", "Double Click", "Double click element."),
+		("rightClick", "Right Click", "Right click element."),
+		("focus", "Focus", "Focus element."),
+		("dragAndDrop", "Drag and Drop", "Drag and drop element."),
+		("cookies", "Get Cookies", "Get cookies."),
+		("setCookie", "Set Cookie", "Set cookie."),
+		("acceptAlert", "Accept Alert", "Accept alert."),
+		("dismissAlert", "Dismiss Alert", "Dismiss alert."),
+		("pdf", "Save as PDF", "Save page as PDF."),
+		("waitForNetworkIdle", "Wait for Network Idle", "Wait for network idle."),
+		("tabAttribute", "Tab Get Attribute", "Get element attribute in tab."),
+		("tabIsVisible", "Tab Is Visible", "Check if element is visible in tab."),
+		("tabIsEnabled", "Tab Is Enabled", "Check if element is enabled in tab."),
+		("tabSelectOption", "Tab Select Option", "Select option in dropdown in tab."),
+		("tabSetChecked", "Tab Set Checked", "Set checkbox/radio checked state in tab."),
+		("tabHover", "Tab Hover", "Hover over element in tab."),
+		("tabScrollTo", "Tab Scroll To", "Scroll to element in tab."),
+		("tabTitle", "Tab Get Title", "Get page title in tab."),
+		("tabDoubleClick", "Tab Double Click", "Double click element in tab."),
+		("tabRightClick", "Tab Right Click", "Right click element in tab."),
+		("tabFocus", "Tab Focus", "Focus element in tab."),
+		("tabDragAndDrop", "Tab Drag and Drop", "Drag and drop element in tab."),
+		("tabCookies", "Tab Get Cookies", "Get cookies in tab."),
+		("tabSetCookie", "Tab Set Cookie", "Set cookie in tab."),
+		("tabAcceptAlert", "Tab Accept Alert", "Accept alert in tab."),
+		("tabDismissAlert", "Tab Dismiss Alert", "Dismiss alert in tab."),
+		("tabPdf", "Tab Save as PDF", "Save page as PDF in tab."),
+		("tabWaitForNetworkIdle", "Tab Wait for Network Idle", "Wait for network idle in tab."),
 	]
 	.into_iter()
 	.map(|(suffix, name, desc)| floorp_plugin_function(suffix, name, desc)));
@@ -374,6 +448,19 @@ fn op_floorp_submit_form(
 	run_blocking_json(move || {
 		let c = cfg(None);
 		openapi::apis::default_api::submit_scraper_form(&c, &id, body)
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_clear_input(
+	#[string] id: String,
+	#[string] selector: String,
+) -> Result<String, JsErrorBox> {
+	let body = openapi::models::SelectorRequest { selector };
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::clear_scraper_input(&c, &id, body)
 	})
 }
 
@@ -649,6 +736,19 @@ fn op_floorp_tab_submit_form(
 	})
 }
 
+#[op2]
+#[string]
+fn op_floorp_tab_clear_input(
+	#[string] id: String,
+	#[string] selector: String,
+) -> Result<String, JsErrorBox> {
+	let body = openapi::models::SelectorRequest { selector };
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::clear_tab_input(&c, &id, body)
+	})
+}
+
 // ---- Browser / Tab listing & context ----
 #[op2]
 #[string]
@@ -792,6 +892,7 @@ make_plugin!(floorp_tab_region_screenshot_plugin, op_floorp_tab_region_screensho
 make_plugin!(floorp_tab_fill_form_plugin, op_floorp_tab_fill_form, "tabFillForm", "Tab Fill Form", "Fill a form in tab.");
 make_plugin!(floorp_tab_element_value_plugin, op_floorp_tab_element_value, "tabElementValue", "Tab Element Value", "Get element value in tab by selector.");
 make_plugin!(floorp_tab_submit_form_plugin, op_floorp_tab_submit_form, "tabSubmitForm", "Tab Submit Form", "Submit a form element in tab.");
+make_plugin!(floorp_tab_clear_input_plugin, op_floorp_tab_clear_input, "tabClearInput", "Tab Clear Input", "Clear an input field in tab.");
 make_plugin!(floorp_scraper_uri_plugin, op_floorp_scraper_uri, "scraperUri", "Scraper URI", "Get current URI of scraper instance.");
 make_plugin!(floorp_tab_uri_plugin, op_floorp_tab_uri, "tabUri", "Tab URI", "Get current URI of tab instance.");
 make_plugin!(floorp_wait_for_element_plugin, op_floorp_wait_for_element, "waitForElement", "Wait For Element", "Wait for an element by selector.");
@@ -800,6 +901,7 @@ make_plugin!(floorp_element_text_plugin, op_floorp_element_text, "elementText", 
 make_plugin!(floorp_element_value_plugin, op_floorp_element_value, "elementValue", "Element Value", "Get value of element by selector.");
 make_plugin!(floorp_fill_form_plugin, op_floorp_fill_form, "fillForm", "Fill Form", "Fill a form element.");
 make_plugin!(floorp_submit_form_plugin, op_floorp_submit_form, "submitForm", "Submit Form", "Submit a form element.");
+make_plugin!(floorp_clear_input_plugin, op_floorp_clear_input, "clearInput", "Clear Input", "Clear an input field.");
 make_plugin!(floorp_screenshot_plugin, op_floorp_screenshot, "screenshot", "Screenshot", "Take a screenshot of the page (PNG base64).");
 make_plugin!(floorp_element_screenshot_plugin, op_floorp_element_screenshot, "elementScreenshot", "Element Screenshot", "Take a screenshot of an element (PNG base64).");
 make_plugin!(floorp_fullpage_screenshot_plugin, op_floorp_fullpage_screenshot, "fullPageScreenshot", "Full Page Screenshot", "Take a full page screenshot (PNG base64).");
@@ -814,3 +916,513 @@ make_plugin!(floorp_destroy_tab_instance_plugin, op_floorp_destroy_tab_instance,
 make_plugin!(floorp_destroy_scraper_instance_plugin, op_floorp_destroy_scraper_instance, "destroyScraperInstance", "Destroy Scraper Instance", "Destroy a scraper instance." );
 make_plugin!(floorp_check_tab_instance_exists_plugin, op_floorp_check_tab_instance_exists, "checkTabInstanceExists", "Check Tab Instance Exists", "Check if tab instance exists." );
 make_plugin!(floorp_check_scraper_instance_exists_plugin, op_floorp_check_scraper_instance_exists, "checkScraperInstanceExists", "Check Scraper Instance Exists", "Check if scraper instance exists." );
+
+// --- New Scraper Ops ---
+
+#[op2]
+#[string]
+fn op_floorp_attribute(
+	#[string] id: String,
+	#[string] selector: String,
+	#[string] name: String,
+) -> Result<String, JsErrorBox> {
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::get_scraper_attribute(&c, &id, &selector, &name)
+			.map(|r| serde_json::json!({ "value": r.value }))
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_is_visible(
+	#[string] id: String,
+	#[string] selector: String,
+) -> Result<String, JsErrorBox> {
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::is_scraper_visible(&c, &id, &selector)
+			.map(|r| serde_json::json!({ "visible": r.visible }))
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_is_enabled(
+	#[string] id: String,
+	#[string] selector: String,
+) -> Result<String, JsErrorBox> {
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::is_scraper_enabled(&c, &id, &selector)
+			.map(|r| serde_json::json!({ "enabled": r.enabled }))
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_select_option(
+	#[string] id: String,
+	#[string] selector: String,
+	#[string] value: String,
+) -> Result<String, JsErrorBox> {
+	let body = openapi::models::SelectOptionRequest { selector, value };
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::select_scraper_option(&c, &id, body)
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_set_checked(
+	#[string] id: String,
+	#[string] selector: String,
+	#[string] checked: String, // "true" or "false"
+) -> Result<String, JsErrorBox> {
+	let checked_bool = checked.parse::<bool>().unwrap_or(false);
+	let body = openapi::models::SetCheckedRequest { selector, checked: checked_bool };
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::set_scraper_checked(&c, &id, body)
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_hover(
+	#[string] id: String,
+	#[string] selector: String,
+) -> Result<String, JsErrorBox> {
+	let body = openapi::models::SelectorRequest { selector };
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::hover_scraper_element(&c, &id, body)
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_scroll_to(
+	#[string] id: String,
+	#[string] selector: String,
+) -> Result<String, JsErrorBox> {
+	let body = openapi::models::SelectorRequest { selector };
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::scroll_to_scraper_element(&c, &id, body)
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_title(
+	#[string] id: String,
+) -> Result<String, JsErrorBox> {
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::get_scraper_title(&c, &id)
+			.map(|r| serde_json::json!({ "title": r.title }))
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_double_click(
+	#[string] id: String,
+	#[string] selector: String,
+) -> Result<String, JsErrorBox> {
+	let body = openapi::models::SelectorRequest { selector };
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::double_click_scraper_element(&c, &id, body)
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_right_click(
+	#[string] id: String,
+	#[string] selector: String,
+) -> Result<String, JsErrorBox> {
+	let body = openapi::models::SelectorRequest { selector };
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::right_click_scraper_element(&c, &id, body)
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_focus(
+	#[string] id: String,
+	#[string] selector: String,
+) -> Result<String, JsErrorBox> {
+	let body = openapi::models::SelectorRequest { selector };
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::focus_scraper_element(&c, &id, body)
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_drag_and_drop(
+	#[string] id: String,
+	#[string] source: String,
+	#[string] target: String,
+) -> Result<String, JsErrorBox> {
+	let body = openapi::models::DragAndDropRequest { source_selector: source, target_selector: target };
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::drag_and_drop_scraper_element(&c, &id, body)
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_cookies(
+	#[string] id: String,
+) -> Result<String, JsErrorBox> {
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::get_scraper_cookies(&c, &id)
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_set_cookie(
+	#[string] id: String,
+	#[string] cookie_json: String,
+) -> Result<String, JsErrorBox> {
+	let body: openapi::models::CookieData = serde_json::from_str(&cookie_json).map_err(|e| JsErrorBox::new("Error", e.to_string()))?;
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::set_scraper_cookie(&c, &id, body)
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_accept_alert(
+	#[string] id: String,
+) -> Result<String, JsErrorBox> {
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::accept_scraper_alert(&c, &id)
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_dismiss_alert(
+	#[string] id: String,
+) -> Result<String, JsErrorBox> {
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::dismiss_scraper_alert(&c, &id)
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_pdf(
+	#[string] id: String,
+) -> Result<String, JsErrorBox> {
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::save_scraper_pdf(&c, &id)
+			.map(|r| serde_json::json!({ "pdf": r.pdf }))
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_wait_for_network_idle(
+	#[string] id: String,
+	#[string] timeout_ms: Option<String>,
+) -> Result<String, JsErrorBox> {
+	let mut body = openapi::models::WaitForNetworkIdleRequest { timeout: None };
+	if let Some(t) = timeout_ms {
+		body.timeout = t.parse::<i32>().ok();
+	}
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::wait_for_scraper_network_idle(&c, &id, body)
+	})
+}
+
+// --- New Tab Ops ---
+
+#[op2]
+#[string]
+fn op_floorp_tab_attribute(
+	#[string] id: String,
+	#[string] selector: String,
+	#[string] name: String,
+) -> Result<String, JsErrorBox> {
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::get_tab_attribute(&c, &id, &selector, &name)
+			.map(|r| serde_json::json!({ "value": r.value }))
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_tab_is_visible(
+	#[string] id: String,
+	#[string] selector: String,
+) -> Result<String, JsErrorBox> {
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::is_tab_visible(&c, &id, &selector)
+			.map(|r| serde_json::json!({ "visible": r.visible }))
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_tab_is_enabled(
+	#[string] id: String,
+	#[string] selector: String,
+) -> Result<String, JsErrorBox> {
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::is_tab_enabled(&c, &id, &selector)
+			.map(|r| serde_json::json!({ "enabled": r.enabled }))
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_tab_select_option(
+	#[string] id: String,
+	#[string] selector: String,
+	#[string] value: String,
+) -> Result<String, JsErrorBox> {
+	let body = openapi::models::SelectOptionRequest { selector, value };
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::select_tab_option(&c, &id, body)
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_tab_set_checked(
+	#[string] id: String,
+	#[string] selector: String,
+	#[string] checked: String,
+) -> Result<String, JsErrorBox> {
+	let checked_bool = checked.parse::<bool>().unwrap_or(false);
+	let body = openapi::models::SetCheckedRequest { selector, checked: checked_bool };
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::set_tab_checked(&c, &id, body)
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_tab_hover(
+	#[string] id: String,
+	#[string] selector: String,
+) -> Result<String, JsErrorBox> {
+	let body = openapi::models::SelectorRequest { selector };
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::hover_tab_element(&c, &id, body)
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_tab_scroll_to(
+	#[string] id: String,
+	#[string] selector: String,
+) -> Result<String, JsErrorBox> {
+	let body = openapi::models::SelectorRequest { selector };
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::scroll_to_tab_element(&c, &id, body)
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_tab_title(
+	#[string] id: String,
+) -> Result<String, JsErrorBox> {
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::get_tab_title(&c, &id)
+			.map(|r| serde_json::json!({ "title": r.title }))
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_tab_double_click(
+	#[string] id: String,
+	#[string] selector: String,
+) -> Result<String, JsErrorBox> {
+	let body = openapi::models::SelectorRequest { selector };
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::double_click_tab_element(&c, &id, body)
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_tab_right_click(
+	#[string] id: String,
+	#[string] selector: String,
+) -> Result<String, JsErrorBox> {
+	let body = openapi::models::SelectorRequest { selector };
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::right_click_tab_element(&c, &id, body)
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_tab_focus(
+	#[string] id: String,
+	#[string] selector: String,
+) -> Result<String, JsErrorBox> {
+	let body = openapi::models::SelectorRequest { selector };
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::focus_tab_element(&c, &id, body)
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_tab_drag_and_drop(
+	#[string] id: String,
+	#[string] source: String,
+	#[string] target: String,
+) -> Result<String, JsErrorBox> {
+	let body = openapi::models::DragAndDropRequest { source_selector: source, target_selector: target };
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::drag_and_drop_tab_element(&c, &id, body)
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_tab_cookies(
+	#[string] id: String,
+) -> Result<String, JsErrorBox> {
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::get_tab_cookies(&c, &id)
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_tab_set_cookie(
+	#[string] id: String,
+	#[string] cookie_json: String,
+) -> Result<String, JsErrorBox> {
+	let body: openapi::models::CookieData = serde_json::from_str(&cookie_json).map_err(|e| JsErrorBox::new("Error", e.to_string()))?;
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::set_tab_cookie(&c, &id, body)
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_tab_accept_alert(
+	#[string] id: String,
+) -> Result<String, JsErrorBox> {
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::accept_tab_alert(&c, &id)
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_tab_dismiss_alert(
+	#[string] id: String,
+) -> Result<String, JsErrorBox> {
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::dismiss_tab_alert(&c, &id)
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_tab_pdf(
+	#[string] id: String,
+) -> Result<String, JsErrorBox> {
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::save_tab_pdf(&c, &id)
+			.map(|r| serde_json::json!({ "pdf": r.pdf }))
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_tab_wait_for_network_idle(
+	#[string] id: String,
+	#[string] timeout_ms: Option<String>,
+) -> Result<String, JsErrorBox> {
+	let mut body = openapi::models::WaitForNetworkIdleRequest { timeout: None };
+	if let Some(t) = timeout_ms {
+		body.timeout = t.parse::<i32>().ok();
+	}
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::wait_for_tab_network_idle(&c, &id, body)
+	})
+}
+
+make_plugin!(floorp_attribute_plugin, op_floorp_attribute, "attribute", "Get Attribute", "Get element attribute.");
+make_plugin!(floorp_is_visible_plugin, op_floorp_is_visible, "isVisible", "Is Visible", "Check if element is visible.");
+make_plugin!(floorp_is_enabled_plugin, op_floorp_is_enabled, "isEnabled", "Is Enabled", "Check if element is enabled.");
+make_plugin!(floorp_select_option_plugin, op_floorp_select_option, "selectOption", "Select Option", "Select option in dropdown.");
+make_plugin!(floorp_set_checked_plugin, op_floorp_set_checked, "setChecked", "Set Checked", "Set checkbox/radio checked state.");
+make_plugin!(floorp_hover_plugin, op_floorp_hover, "hover", "Hover", "Hover over element.");
+make_plugin!(floorp_scroll_to_plugin, op_floorp_scroll_to, "scrollTo", "Scroll To", "Scroll to element.");
+make_plugin!(floorp_title_plugin, op_floorp_title, "title", "Get Title", "Get page title.");
+make_plugin!(floorp_double_click_plugin, op_floorp_double_click, "doubleClick", "Double Click", "Double click element.");
+make_plugin!(floorp_right_click_plugin, op_floorp_right_click, "rightClick", "Right Click", "Right click element.");
+make_plugin!(floorp_focus_plugin, op_floorp_focus, "focus", "Focus", "Focus element.");
+make_plugin!(floorp_drag_and_drop_plugin, op_floorp_drag_and_drop, "dragAndDrop", "Drag and Drop", "Drag and drop element.");
+make_plugin!(floorp_cookies_plugin, op_floorp_cookies, "cookies", "Get Cookies", "Get cookies.");
+make_plugin!(floorp_set_cookie_plugin, op_floorp_set_cookie, "setCookie", "Set Cookie", "Set cookie.");
+make_plugin!(floorp_accept_alert_plugin, op_floorp_accept_alert, "acceptAlert", "Accept Alert", "Accept alert.");
+make_plugin!(floorp_dismiss_alert_plugin, op_floorp_dismiss_alert, "dismissAlert", "Dismiss Alert", "Dismiss alert.");
+make_plugin!(floorp_pdf_plugin, op_floorp_pdf, "pdf", "Save as PDF", "Save page as PDF.");
+make_plugin!(floorp_wait_for_network_idle_plugin, op_floorp_wait_for_network_idle, "waitForNetworkIdle", "Wait for Network Idle", "Wait for network idle.");
+
+make_plugin!(floorp_tab_attribute_plugin, op_floorp_tab_attribute, "tabAttribute", "Tab Get Attribute", "Get element attribute in tab.");
+make_plugin!(floorp_tab_is_visible_plugin, op_floorp_tab_is_visible, "tabIsVisible", "Tab Is Visible", "Check if element is visible in tab.");
+make_plugin!(floorp_tab_is_enabled_plugin, op_floorp_tab_is_enabled, "tabIsEnabled", "Tab Is Enabled", "Check if element is enabled in tab.");
+make_plugin!(floorp_tab_select_option_plugin, op_floorp_tab_select_option, "tabSelectOption", "Tab Select Option", "Select option in dropdown in tab.");
+make_plugin!(floorp_tab_set_checked_plugin, op_floorp_tab_set_checked, "tabSetChecked", "Tab Set Checked", "Set checkbox/radio checked state in tab.");
+make_plugin!(floorp_tab_hover_plugin, op_floorp_tab_hover, "tabHover", "Tab Hover", "Hover over element in tab.");
+make_plugin!(floorp_tab_scroll_to_plugin, op_floorp_tab_scroll_to, "tabScrollTo", "Tab Scroll To", "Scroll to element in tab.");
+make_plugin!(floorp_tab_title_plugin, op_floorp_tab_title, "tabTitle", "Tab Get Title", "Get page title in tab.");
+make_plugin!(floorp_tab_double_click_plugin, op_floorp_tab_double_click, "tabDoubleClick", "Tab Double Click", "Double click element in tab.");
+make_plugin!(floorp_tab_right_click_plugin, op_floorp_tab_right_click, "tabRightClick", "Tab Right Click", "Right click element in tab.");
+make_plugin!(floorp_tab_focus_plugin, op_floorp_tab_focus, "tabFocus", "Tab Focus", "Focus element in tab.");
+make_plugin!(floorp_tab_drag_and_drop_plugin, op_floorp_tab_drag_and_drop, "tabDragAndDrop", "Tab Drag and Drop", "Drag and drop element in tab.");
+make_plugin!(floorp_tab_cookies_plugin, op_floorp_tab_cookies, "tabCookies", "Tab Get Cookies", "Get cookies in tab.");
+make_plugin!(floorp_tab_set_cookie_plugin, op_floorp_tab_set_cookie, "tabSetCookie", "Tab Set Cookie", "Set cookie in tab.");
+make_plugin!(floorp_tab_accept_alert_plugin, op_floorp_tab_accept_alert, "tabAcceptAlert", "Tab Accept Alert", "Accept alert in tab.");
+make_plugin!(floorp_tab_dismiss_alert_plugin, op_floorp_tab_dismiss_alert, "tabDismissAlert", "Tab Dismiss Alert", "Dismiss alert in tab.");
+make_plugin!(floorp_tab_pdf_plugin, op_floorp_tab_pdf, "tabPdf", "Tab Save as PDF", "Save page as PDF in tab.");
+make_plugin!(floorp_tab_wait_for_network_idle_plugin, op_floorp_tab_wait_for_network_idle, "tabWaitForNetworkIdle", "Tab Wait for Network Idle", "Wait for network idle in tab.");

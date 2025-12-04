@@ -256,67 +256,67 @@ paths:
               schema:
                 $ref: "#/components/schemas/TextResponse"
 
-    /scraper/instances/{id}/elements:
-      get:
-        summary: Get all matching elements' outerHTML
-        operationId: getScraperElements
-        parameters:
-          - $ref: "#/components/parameters/InstanceId"
-          - name: selector
-            in: query
-            required: true
-            schema:
-              type: string
-        responses:
-          "200":
-            description: List of elements outerHTML
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    elements:
-                      type: array
-                      items:
-                        type: string
+  /scraper/instances/{id}/elements:
+    get:
+      summary: Get all matching elements' outerHTML
+      operationId: getScraperElements
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+        - name: selector
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of elements outerHTML
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  elements:
+                    type: array
+                    items:
+                      type: string
 
-    /scraper/instances/{id}/elementByText:
-      get:
-        summary: Find first element containing text
-        operationId: getScraperElementByText
-        parameters:
-          - $ref: "#/components/parameters/InstanceId"
-          - name: text
-            in: query
-            required: true
-            schema:
-              type: string
-        responses:
-          "200":
-            description: Element HTML or empty
-            content:
-              application/json:
-                schema:
-                  $ref: "#/components/schemas/ElementResponse"
+  /scraper/instances/{id}/elementByText:
+    get:
+      summary: Find first element containing text
+      operationId: getScraperElementByText
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+        - name: text
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Element HTML or empty
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ElementResponse"
 
-    /scraper/instances/{id}/elementTextContent:
-      get:
-        summary: Get trimmed text content for selector
-        operationId: getScraperElementTextContent
-        parameters:
-          - $ref: "#/components/parameters/InstanceId"
-          - name: selector
-            in: query
-            required: true
-            schema:
-              type: string
-        responses:
-          "200":
-            description: Element text content
-            content:
-              application/json:
-                schema:
-                  $ref: "#/components/schemas/TextResponse"
+  /scraper/instances/{id}/elementTextContent:
+    get:
+      summary: Get trimmed text content for selector
+      operationId: getScraperElementTextContent
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+        - name: selector
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Element text content
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TextResponse"
 
   /scraper/instances/{id}/click:
     post:
@@ -481,6 +481,358 @@ paths:
       responses:
         "200":
           description: Form submission result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+
+  /scraper/instances/{id}/clearInput:
+    post:
+      summary: Clear input field in scraper instance
+      operationId: clearScraperInput
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SelectorRequest"
+      responses:
+        "200":
+          description: Input clear result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+
+  /scraper/instances/{id}/attribute:
+    get:
+      summary: Get element attribute
+      operationId: getScraperAttribute
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+        - name: selector
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: name
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Attribute value
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AttributeResponse"
+
+  /scraper/instances/{id}/isVisible:
+    get:
+      summary: Check if element is visible
+      operationId: isScraperVisible
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+        - name: selector
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Visibility status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VisibleResponse"
+
+  /scraper/instances/{id}/isEnabled:
+    get:
+      summary: Check if element is enabled
+      operationId: isScraperEnabled
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+        - name: selector
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Enabled status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EnabledResponse"
+
+  /scraper/instances/{id}/selectOption:
+    post:
+      summary: Select option in dropdown
+      operationId: selectScraperOption
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SelectOptionRequest"
+      responses:
+        "200":
+          description: Selection result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+
+  /scraper/instances/{id}/setChecked:
+    post:
+      summary: Set checkbox/radio checked state
+      operationId: setScraperChecked
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SetCheckedRequest"
+      responses:
+        "200":
+          description: Set checked result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+
+  /scraper/instances/{id}/hover:
+    post:
+      summary: Hover over element
+      operationId: hoverScraperElement
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SelectorRequest"
+      responses:
+        "200":
+          description: Hover result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+
+  /scraper/instances/{id}/scrollTo:
+    post:
+      summary: Scroll to element
+      operationId: scrollToScraperElement
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SelectorRequest"
+      responses:
+        "200":
+          description: Scroll result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+
+  /scraper/instances/{id}/title:
+    get:
+      summary: Get page title
+      operationId: getScraperTitle
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      responses:
+        "200":
+          description: Page title
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TitleResponse"
+
+  /scraper/instances/{id}/doubleClick:
+    post:
+      summary: Double click element
+      operationId: doubleClickScraperElement
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SelectorRequest"
+      responses:
+        "200":
+          description: Double click result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+
+  /scraper/instances/{id}/rightClick:
+    post:
+      summary: Right click element
+      operationId: rightClickScraperElement
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SelectorRequest"
+      responses:
+        "200":
+          description: Right click result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+
+  /scraper/instances/{id}/focus:
+    post:
+      summary: Focus element
+      operationId: focusScraperElement
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SelectorRequest"
+      responses:
+        "200":
+          description: Focus result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+
+  /scraper/instances/{id}/dragAndDrop:
+    post:
+      summary: Drag and drop element
+      operationId: dragAndDropScraperElement
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DragAndDropRequest"
+      responses:
+        "200":
+          description: Drag and drop result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+
+  /scraper/instances/{id}/cookies:
+    get:
+      summary: Get cookies
+      operationId: getScraperCookies
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      responses:
+        "200":
+          description: Cookies
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CookieResponse"
+
+  /scraper/instances/{id}/cookie:
+    post:
+      summary: Set cookie
+      operationId: setScraperCookie
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CookieData"
+      responses:
+        "200":
+          description: Set cookie result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+
+  /scraper/instances/{id}/acceptAlert:
+    post:
+      summary: Accept alert
+      operationId: acceptScraperAlert
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      responses:
+        "200":
+          description: Accept alert result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+
+  /scraper/instances/{id}/dismissAlert:
+    post:
+      summary: Dismiss alert
+      operationId: dismissScraperAlert
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      responses:
+        "200":
+          description: Dismiss alert result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+
+  /scraper/instances/{id}/pdf:
+    get:
+      summary: Save as PDF
+      operationId: saveScraperPDF
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      responses:
+        "200":
+          description: PDF data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PDFResponse"
+
+  /scraper/instances/{id}/waitForNetworkIdle:
+    post:
+      summary: Wait for network idle
+      operationId: waitForScraperNetworkIdle
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WaitForNetworkIdleRequest"
+      responses:
+        "200":
+          description: Wait result
           content:
             application/json:
               schema:
@@ -672,67 +1024,67 @@ paths:
               schema:
                 $ref: "#/components/schemas/TextResponse"
 
-    /tabs/instances/{id}/elements:
-      get:
-        summary: Get all matching elements' outerHTML for tab
-        operationId: getTabElements
-        parameters:
-          - $ref: "#/components/parameters/InstanceId"
-          - name: selector
-            in: query
-            required: true
-            schema:
-              type: string
-        responses:
-          "200":
-            description: List of elements outerHTML
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    elements:
-                      type: array
-                      items:
-                        type: string
+  /tabs/instances/{id}/elements:
+    get:
+      summary: Get all matching elements' outerHTML for tab
+      operationId: getTabElements
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+        - name: selector
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of elements outerHTML
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  elements:
+                    type: array
+                    items:
+                      type: string
 
-    /tabs/instances/{id}/elementByText:
-      get:
-        summary: Find first element containing text in tab
-        operationId: getTabElementByText
-        parameters:
-          - $ref: "#/components/parameters/InstanceId"
-          - name: text
-            in: query
-            required: true
-            schema:
-              type: string
-        responses:
-          "200":
-            description: Element HTML or empty
-            content:
-              application/json:
-                schema:
-                  $ref: "#/components/schemas/ElementResponse"
+  /tabs/instances/{id}/elementByText:
+    get:
+      summary: Find first element containing text in tab
+      operationId: getTabElementByText
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+        - name: text
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Element HTML or empty
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ElementResponse"
 
-    /tabs/instances/{id}/elementTextContent:
-      get:
-        summary: Get trimmed text content for selector in tab
-        operationId: getTabElementTextContent
-        parameters:
-          - $ref: "#/components/parameters/InstanceId"
-          - name: selector
-            in: query
-            required: true
-            schema:
-              type: string
-        responses:
-          "200":
-            description: Element text content
-            content:
-              application/json:
-                schema:
-                  $ref: "#/components/schemas/TextResponse"
+  /tabs/instances/{id}/elementTextContent:
+    get:
+      summary: Get trimmed text content for selector in tab
+      operationId: getTabElementTextContent
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+        - name: selector
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Element text content
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TextResponse"
 
   /tabs/instances/{id}/click:
     post:
@@ -897,6 +1249,358 @@ paths:
       responses:
         "200":
           description: Form submission result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+
+  /tabs/instances/{id}/clearInput:
+    post:
+      summary: Clear input field in tab instance
+      operationId: clearTabInput
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SelectorRequest"
+      responses:
+        "200":
+          description: Input clear result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+
+  /tabs/instances/{id}/attribute:
+    get:
+      summary: Get element attribute
+      operationId: getTabAttribute
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+        - name: selector
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: name
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Attribute value
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AttributeResponse"
+
+  /tabs/instances/{id}/isVisible:
+    get:
+      summary: Check if element is visible
+      operationId: isTabVisible
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+        - name: selector
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Visibility status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VisibleResponse"
+
+  /tabs/instances/{id}/isEnabled:
+    get:
+      summary: Check if element is enabled
+      operationId: isTabEnabled
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+        - name: selector
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Enabled status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EnabledResponse"
+
+  /tabs/instances/{id}/selectOption:
+    post:
+      summary: Select option in dropdown
+      operationId: selectTabOption
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SelectOptionRequest"
+      responses:
+        "200":
+          description: Selection result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+
+  /tabs/instances/{id}/setChecked:
+    post:
+      summary: Set checkbox/radio checked state
+      operationId: setTabChecked
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SetCheckedRequest"
+      responses:
+        "200":
+          description: Set checked result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+
+  /tabs/instances/{id}/hover:
+    post:
+      summary: Hover over element
+      operationId: hoverTabElement
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SelectorRequest"
+      responses:
+        "200":
+          description: Hover result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+
+  /tabs/instances/{id}/scrollTo:
+    post:
+      summary: Scroll to element
+      operationId: scrollToTabElement
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SelectorRequest"
+      responses:
+        "200":
+          description: Scroll result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+
+  /tabs/instances/{id}/title:
+    get:
+      summary: Get page title
+      operationId: getTabTitle
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      responses:
+        "200":
+          description: Page title
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TitleResponse"
+
+  /tabs/instances/{id}/doubleClick:
+    post:
+      summary: Double click element
+      operationId: doubleClickTabElement
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SelectorRequest"
+      responses:
+        "200":
+          description: Double click result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+
+  /tabs/instances/{id}/rightClick:
+    post:
+      summary: Right click element
+      operationId: rightClickTabElement
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SelectorRequest"
+      responses:
+        "200":
+          description: Right click result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+
+  /tabs/instances/{id}/focus:
+    post:
+      summary: Focus element
+      operationId: focusTabElement
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SelectorRequest"
+      responses:
+        "200":
+          description: Focus result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+
+  /tabs/instances/{id}/dragAndDrop:
+    post:
+      summary: Drag and drop element
+      operationId: dragAndDropTabElement
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DragAndDropRequest"
+      responses:
+        "200":
+          description: Drag and drop result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+
+  /tabs/instances/{id}/cookies:
+    get:
+      summary: Get cookies
+      operationId: getTabCookies
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      responses:
+        "200":
+          description: Cookies
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CookieResponse"
+
+  /tabs/instances/{id}/cookie:
+    post:
+      summary: Set cookie
+      operationId: setTabCookie
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CookieData"
+      responses:
+        "200":
+          description: Set cookie result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+
+  /tabs/instances/{id}/acceptAlert:
+    post:
+      summary: Accept alert
+      operationId: acceptTabAlert
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      responses:
+        "200":
+          description: Accept alert result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+
+  /tabs/instances/{id}/dismissAlert:
+    post:
+      summary: Dismiss alert
+      operationId: dismissTabAlert
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      responses:
+        "200":
+          description: Dismiss alert result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+
+  /tabs/instances/{id}/pdf:
+    get:
+      summary: Save as PDF
+      operationId: saveTabPDF
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      responses:
+        "200":
+          description: PDF data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PDFResponse"
+
+  /tabs/instances/{id}/waitForNetworkIdle:
+    post:
+      summary: Wait for network idle
+      operationId: waitForTabNetworkIdle
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WaitForNetworkIdleRequest"
+      responses:
+        "200":
+          description: Wait result
           content:
             application/json:
               schema:
@@ -1294,3 +1998,116 @@ components:
       required:
         - type
         - timestamp
+
+    # New Automation Types
+    CookieData:
+      type: object
+      properties:
+        name:
+          type: string
+        value:
+          type: string
+        domain:
+          type: string
+        path:
+          type: string
+        secure:
+          type: boolean
+        httpOnly:
+          type: boolean
+        sameSite:
+          type: string
+          enum: [Strict, Lax, None]
+        expirationDate:
+          type: integer
+      required:
+        - name
+        - value
+
+    CookieResponse:
+      type: object
+      properties:
+        cookies:
+          type: array
+          items:
+            $ref: "#/components/schemas/CookieData"
+      required:
+        - cookies
+
+    PDFResponse:
+      type: object
+      properties:
+        pdf:
+          type: string
+          description: Base64-encoded PDF data
+          nullable: true
+
+    TitleResponse:
+      type: object
+      properties:
+        title:
+          type: string
+          nullable: true
+
+    AttributeResponse:
+      type: object
+      properties:
+        value:
+          type: string
+          nullable: true
+
+    VisibleResponse:
+      type: object
+      properties:
+        visible:
+          type: boolean
+      required:
+        - visible
+
+    EnabledResponse:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+      required:
+        - enabled
+
+    SelectOptionRequest:
+      type: object
+      properties:
+        selector:
+          type: string
+        value:
+          type: string
+      required:
+        - selector
+        - value
+
+    SetCheckedRequest:
+      type: object
+      properties:
+        selector:
+          type: string
+        checked:
+          type: boolean
+      required:
+        - selector
+        - checked
+
+    DragAndDropRequest:
+      type: object
+      properties:
+        sourceSelector:
+          type: string
+        targetSelector:
+          type: string
+      required:
+        - sourceSelector
+        - targetSelector
+
+    WaitForNetworkIdleRequest:
+      type: object
+      properties:
+        timeout:
+          type: integer
+          default: 5000

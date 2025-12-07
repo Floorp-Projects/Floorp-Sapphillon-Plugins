@@ -31,6 +31,18 @@ function floorpElementText(id, selector) {
 function floorpElementValue(id, selector) {
   return Deno.core.ops.op_floorp_element_value(id, selector);
 }
+function floorpElementByText(id, text) {
+  return Deno.core.ops.op_floorp_element_by_text(id, text);
+}
+function floorpElementTextContent(id, selector) {
+  return Deno.core.ops.op_floorp_element_text_content(id, selector);
+}
+function floorpTabElementByText(id, text) {
+  return Deno.core.ops.op_floorp_tab_element_by_text(id, text);
+}
+function floorpTabElementTextContent(id, selector) {
+  return Deno.core.ops.op_floorp_tab_element_text_content(id, selector);
+}
 function floorpFillForm(id, selector, value) {
   return Deno.core.ops.op_floorp_fill_form(id, selector, value);
 }
@@ -91,9 +103,6 @@ function floorpTabWaitForElement(id, selector, timeoutMs) {
     selector,
     timeoutMs?.toString(),
   );
-}
-function floorpTabExecuteScript(id, script) {
-  return Deno.core.ops.op_floorp_tab_execute_script(id, script);
 }
 function floorpTabClearInput(id, selector) {
   return Deno.core.ops.op_floorp_tab_clear_input(id, selector);
@@ -286,8 +295,13 @@ globalThis.floorp = {
   click: floorpClick,
   text: floorpElementText,
   value: floorpElementValue,
+  elementByText: floorpElementByText,
+  elementTextContent: floorpElementTextContent,
+  tabElementByText: floorpTabElementByText,
+  tabElementTextContent: floorpTabElementTextContent,
   fillForm: floorpFillForm,
   submitForm: floorpSubmitForm,
+  clearInput: floorpClearInput,
   screenshot: floorpScreenshot,
   elementScreenshot: floorpElementScreenshot,
   fullPageScreenshot: floorpFullPageScreenshot,
@@ -301,13 +315,13 @@ globalThis.floorp = {
   tabElementText: floorpTabElementText,
   tabClick: floorpTabClick,
   tabWaitForElement: floorpTabWaitForElement,
-  tabExecuteScript: floorpTabExecuteScript,
   tabElementScreenshot: floorpTabElementScreenshot,
   tabFullPageScreenshot: floorpTabFullPageScreenshot,
   tabRegionScreenshot: floorpTabRegionScreenshot,
   tabFillForm: floorpTabFillForm,
   tabElementValue: floorpTabElementValue,
   tabSubmitForm: floorpTabSubmitForm,
+  tabClearInput: floorpTabClearInput,
   listBrowserTabs: floorpListBrowserTabs,
   browserTabs: floorpBrowserTabs,
   browserHistory: floorpBrowserHistory,

@@ -48,7 +48,7 @@ pub fn core_floorp_plugin_package() -> CorePluginPackage {
 			floorp_tab_element_text_plugin(),
 			floorp_tab_click_element_plugin(),
 			floorp_tab_wait_for_element_plugin(),
-			floorp_tab_execute_script_plugin(),
+
 			floorp_tab_element_screenshot_plugin(),
 			floorp_tab_fullpage_screenshot_plugin(),
 			floorp_tab_region_screenshot_plugin(),
@@ -61,6 +61,10 @@ pub fn core_floorp_plugin_package() -> CorePluginPackage {
 			floorp_click_element_plugin(),
 			floorp_element_text_plugin(),
 			floorp_element_value_plugin(),
+			floorp_element_by_text_plugin(),
+			floorp_element_text_content_plugin(),
+			floorp_tab_element_by_text_plugin(),
+			floorp_tab_element_text_content_plugin(),
 			floorp_fill_form_plugin(),
 			floorp_submit_form_plugin(),
 			floorp_clear_input_plugin(),
@@ -155,7 +159,7 @@ fn floorp_plugin_functions() -> Vec<PluginFunction> {
 		("tabElementText", "Tab Element Text", "Get text content of element in tab by selector."),
 		("tabClickElement", "Tab Click Element", "Click an element in tab by selector."),
 		("tabWaitForElement", "Tab Wait For Element", "Wait for an element in tab by selector."),
-		("tabExecuteScript", "Tab Execute Script", "Execute JS in tab."),
+
 		("tabElementScreenshot", "Tab Element Screenshot", "Take a screenshot of an element in tab (PNG base64)."),
 		("tabFullPageScreenshot", "Tab Full Page Screenshot", "Take a full page screenshot of tab (PNG base64)."),
 		("tabRegionScreenshot", "Tab Region Screenshot", "Take a region screenshot of tab (PNG base64)."),
@@ -168,6 +172,10 @@ fn floorp_plugin_functions() -> Vec<PluginFunction> {
 		("clickElement", "Click Element", "Click an element by selector."),
 		("elementText", "Element Text", "Get text content of element by selector."),
 		("elementValue", "Element Value", "Get value of element by selector."),
+		("elementByText", "Element By Text", "Find first element containing text."),
+		("elementTextContent", "Element Text Content", "Get trimmed text content for selector."),
+		("tabElementByText", "Tab Element By Text", "Find first element containing text in tab."),
+		("tabElementTextContent", "Tab Element Text Content", "Get trimmed text content for selector in tab."),
 		("fillForm", "Fill Form", "Fill a form element."),
 		("submitForm", "Submit Form", "Submit a form element."),
 		("screenshot", "Screenshot", "Take a screenshot of the page (PNG base64)."),
@@ -424,6 +432,70 @@ fn op_floorp_element_value(
 
 #[op2]
 #[string]
+fn op_floorp_element_by_text(
+	#[string] id: String,
+	#[string] text: String,
+) -> Result<String, JsErrorBox> {
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::get_scraper_element_by_text(&c, &id, &text)
+			.map(|r| {
+				let element = r.element.and_then(|e| e).unwrap_or_default();
+				serde_json::json!({ "element": element })
+			})
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_element_text_content(
+	#[string] id: String,
+	#[string] selector: String,
+) -> Result<String, JsErrorBox> {
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::get_scraper_element_text_content(&c, &id, &selector)
+			.map(|r| {
+				let text = r.text.and_then(|t| t).unwrap_or_default();
+				serde_json::json!({ "text": text })
+			})
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_tab_element_by_text(
+	#[string] id: String,
+	#[string] text: String,
+) -> Result<String, JsErrorBox> {
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::get_tab_element_by_text(&c, &id, &text)
+			.map(|r| {
+				let element = r.element.and_then(|e| e).unwrap_or_default();
+				serde_json::json!({ "element": element })
+			})
+	})
+}
+
+#[op2]
+#[string]
+fn op_floorp_tab_element_text_content(
+	#[string] id: String,
+	#[string] selector: String,
+) -> Result<String, JsErrorBox> {
+	run_blocking_json(move || {
+		let c = cfg(None);
+		openapi::apis::default_api::get_tab_element_text_content(&c, &id, &selector)
+			.map(|r| {
+				let text = r.text.and_then(|t| t).unwrap_or_default();
+				serde_json::json!({ "text": text })
+			})
+	})
+}
+
+#[op2]
+#[string]
 fn op_floorp_fill_form(
 	#[string] id: String,
 	#[string] selector: String,
@@ -619,19 +691,6 @@ fn op_floorp_tab_wait_for_element(
 	run_blocking_json(move || {
 		let c = cfg(None);
 		openapi::apis::default_api::wait_for_tab_element(&c, &id, body)
-	})
-}
-
-#[op2]
-#[string]
-fn op_floorp_tab_execute_script(
-	#[string] id: String,
-	#[string] script: String,
-) -> Result<String, JsErrorBox> {
-	let body = openapi::models::ExecuteScriptRequest { script };
-	run_blocking_json(move || {
-		let c = cfg(None);
-		openapi::apis::default_api::execute_tab_script(&c, &id, body)
 	})
 }
 
@@ -885,7 +944,6 @@ make_plugin!(floorp_tab_element_plugin, op_floorp_tab_element, "tabElement", "Ta
 make_plugin!(floorp_tab_element_text_plugin, op_floorp_tab_element_text, "tabElementText", "Tab Element Text", "Get text content of element in tab by selector.");
 make_plugin!(floorp_tab_click_element_plugin, op_floorp_tab_click_element, "tabClickElement", "Tab Click Element", "Click an element in tab by selector.");
 make_plugin!(floorp_tab_wait_for_element_plugin, op_floorp_tab_wait_for_element, "tabWaitForElement", "Tab Wait For Element", "Wait for an element in tab by selector.");
-make_plugin!(floorp_tab_execute_script_plugin, op_floorp_tab_execute_script, "tabExecuteScript", "Tab Execute Script", "Execute JS in tab.");
 make_plugin!(floorp_tab_element_screenshot_plugin, op_floorp_tab_element_screenshot, "tabElementScreenshot", "Tab Element Screenshot", "Take a screenshot of an element in tab (PNG base64).");
 make_plugin!(floorp_tab_fullpage_screenshot_plugin, op_floorp_tab_fullpage_screenshot, "tabFullPageScreenshot", "Tab Full Page Screenshot", "Take a full page screenshot of tab (PNG base64).");
 make_plugin!(floorp_tab_region_screenshot_plugin, op_floorp_tab_region_screenshot, "tabRegionScreenshot", "Tab Region Screenshot", "Take a region screenshot of tab (PNG base64).");
@@ -899,6 +957,10 @@ make_plugin!(floorp_wait_for_element_plugin, op_floorp_wait_for_element, "waitFo
 make_plugin!(floorp_click_element_plugin, op_floorp_click_element, "clickElement", "Click Element", "Click an element by selector.");
 make_plugin!(floorp_element_text_plugin, op_floorp_element_text, "elementText", "Element Text", "Get text content of element by selector.");
 make_plugin!(floorp_element_value_plugin, op_floorp_element_value, "elementValue", "Element Value", "Get value of element by selector.");
+make_plugin!(floorp_element_by_text_plugin, op_floorp_element_by_text, "elementByText", "Element By Text", "Find first element containing text.");
+make_plugin!(floorp_element_text_content_plugin, op_floorp_element_text_content, "elementTextContent", "Element Text Content", "Get trimmed text content for selector.");
+make_plugin!(floorp_tab_element_by_text_plugin, op_floorp_tab_element_by_text, "tabElementByText", "Tab Element By Text", "Find first element containing text in tab.");
+make_plugin!(floorp_tab_element_text_content_plugin, op_floorp_tab_element_text_content, "tabElementTextContent", "Tab Element Text Content", "Get trimmed text content for selector in tab.");
 make_plugin!(floorp_fill_form_plugin, op_floorp_fill_form, "fillForm", "Fill Form", "Fill a form element.");
 make_plugin!(floorp_submit_form_plugin, op_floorp_submit_form, "submitForm", "Submit Form", "Submit a form element.");
 make_plugin!(floorp_clear_input_plugin, op_floorp_clear_input, "clearInput", "Clear Input", "Clear an input field.");
